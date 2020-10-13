@@ -41,14 +41,14 @@ $('#yearDropdown').append(yearOptions);
 
 // Submit button
 document.querySelector('#submitForm').addEventListener('click', () => {
-	$("#mapDropdown").change();
+  $("#mapDropdown").change();
 })
 
 // Populate dropdown menus and turn into jQuery UI widgets
-$.each(Highcharts.mapDataIndex, function(mapGroup, maps) {
+$.each(Highcharts.mapDataIndex, function (mapGroup, maps) {
   if (mapGroup === "Countries" || mapGroup === "Custom") {
     mapOptions += '<option class="option-header">' + mapGroup + '</option>';
-    $.each(maps, function(desc, path) {
+    $.each(maps, function (desc, path) {
       if (selectiveAreas.includes(desc)) {
         mapOptions += '<option value="' + path + '">' + desc + '</option>';
         mapCount += 1;
@@ -61,7 +61,7 @@ mapOptions = '<option value="custom/world.js">' + searchText + '</option>' + map
 $("#mapDropdown").append(mapOptions).combobox();
 
 // Change map when item selected in dropdown
-$("#mapDropdown").change(function() {
+$("#mapDropdown").change(function () {
   var $selectedItem = $("option:selected", this),
     mapDesc = $selectedItem.text(),
     mapKey = this.value.slice(0, -3),
@@ -107,19 +107,19 @@ $("#mapDropdown").change(function() {
       '<a target="_blank" href="' + geojsonPath + '">GeoJSON</a>, ' +
       '<a target="_blank" href="' + javascriptPath + '">JavaScript</a>.</div>'
     );
-    
+
     // Render map according to unit and year
     const year = $('#yearDropdown :selected').val();
     const unit = $('#unitDropdown :selected').val();
     var finalData = emissionData[`unit${unit.split('-')[1]}Data${year}`];
-    
+
 
     // Generate non-random data for the map
-    $.each(mapGeoJSON.features, function(index, feature) {
-      data.push({
-        key: feature.properties['hc-key'],
-        value: finalData[feature.properties['hc-key'].split('-')[0]],
-      });
+    $.each(mapGeoJSON.features, function (index, feature) {
+        data.push({
+          key: feature.properties['hc-key'],
+          value: feature.properties['hc-key'] ? finalData[feature.properties['hc-key'].split('-')[0]] : index
+        });
     });
 
     // Show arrows the first time a real map is shown
@@ -145,12 +145,12 @@ $("#mapDropdown").change(function() {
     if (parent) {
       $('#up').append(
         $('<a><i class="fa fa-angle-up"></i> ' + parent.desc + '</a>')
-        .attr({
-          title: parent.key
-        })
-        .click(function() {
-          $('#mapDropdown').val(parent.key + '.js').change();
-        })
+          .attr({
+            title: parent.key
+          })
+          .click(function () {
+            $('#mapDropdown').val(parent.key + '.js').change();
+          })
       );
     }
 
@@ -194,7 +194,7 @@ $("#mapDropdown").change(function() {
         },
         dataLabels: {
           enabled: showDataLabels,
-          formatter: function() {
+          formatter: function () {
             return mapKey === 'custom/world' || mapKey === 'countries/us/us-all' ?
               (this.point.properties && this.point.properties['hc-a2']) :
               this.point.name;
@@ -203,9 +203,9 @@ $("#mapDropdown").change(function() {
         point: {
           events: {
             // On click, look for a detailed map
-            click: function() {
+            click: function () {
               var key = this.key;
-              $('#mapDropdown option').each(function() {
+              $('#mapDropdown option').each(function () {
                 if (this.value === 'countries/' + key.substr(0, 2) + '/' + key + '-all.js') {
                   $('#mapDropdown').val(this.value).change();
                 }
@@ -237,18 +237,18 @@ $("#mapDropdown").change(function() {
 });
 
 // Toggle data labels - Note: Reloads map with new random data
-$("#chkDataLabels").change(function() {
+$("#chkDataLabels").change(function () {
   showDataLabels = $("#chkDataLabels").prop('checked');
   $("#mapDropdown").change();
 });
 
 // Switch to previous map on button click
-$("#btn-prev-map").click(function() {
+$("#btn-prev-map").click(function () {
   $("#mapDropdown option:selected").prev("option").prop("selected", true).change();
 });
 
 // Switch to next map on button click
-$("#btn-next-map").click(function() {
+$("#btn-next-map").click(function () {
   $("#mapDropdown option:selected").next("option").prop("selected", true).change();
 });
 
